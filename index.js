@@ -2,6 +2,10 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
+const ALERTS_URL = process.env.OREF_API_URL || 'https://www.oref.org.il/WarningMessages/alert/alerts.json';
+const CITY_TO_WATCH = process.env.TARGET_CITY || 'אשדוד';
+const TRIGGER_URL = process.env.TRIGGER_URL;
+
 let lastData = null;
 const logFilePath = path.join(__dirname, 'alerts_log.json');
 
@@ -20,13 +24,12 @@ const appendToLog = (entry) => {
   }
 
   log.push(record);
-
   fs.writeFileSync(logFilePath, JSON.stringify(log, null, 2));
 };
 
 const checkAlerts = async () => {
   try {
-    const res = await axios.get('https://www.oref.org.il/WarningMessages/alert/alerts.json', {
+    const res = await axios.get(ALERTS_URL, {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
 
@@ -38,17 +41,20 @@ const checkAlerts = async () => {
     }
 
     const dataStr = JSON.stringify(data);
-    appendToLog(data); // שמור לוג
+    appendToLog(data);
 
     if (dataStr === lastData) return;
-
     lastData = dataStr;
 
-    if (dataStr.includes('אשדוד')) {
-      console.log('התראה לאשדוד - נשלחת בקשה');
-      await axios.get('https://yeda-phone.com/bsh/admin/learning/sclass/177186/send_zintok/');
+    if (dataStr.includes(CITY_TO_WATCH)) {
+      console.log(`🚨 התראה ל-${CITY_TO_WATCH} - נשלחת בקשה`);
+      if (TRIGGER_URL) {
+        await axios.get(TRIGGER_URL);
+      } else {
+        console.warn('⚠️ TRIGGER_URL לא הוגדר');
+      }
     } else {
-      console.log('אין התראה על אשדוד');
+      console.log(`✅ אין התראה על ${CITY_TO_WATCH}`);
     }
 
   } catch (err) {

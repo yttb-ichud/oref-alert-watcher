@@ -1,13 +1,11 @@
 {
   "name": "oref-alert-watcher",
   "version": "1.0.0",
-  "description": "בודק התראות פיקוד העורף ושולח בקשה אם מופיעה המילה אשדוד.",
+  "description": "בודק התראות בזמן אמת עבור עיר ספציפית",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "משה ישראל",
-  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0"
   }
