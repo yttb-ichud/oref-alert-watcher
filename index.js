@@ -14,7 +14,8 @@ async function checkAlerts() {
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'he-IL,he;q=0.9',
         'Referer': 'https://www.oref.org.il/',
-        'Origin': 'https://www.oref.org.il'
+        'Origin': 'https://www.oref.org.il',
+        'X-Requested-With': 'XMLHttpRequest'
       }
     });
 
